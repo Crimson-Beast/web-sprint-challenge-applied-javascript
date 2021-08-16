@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const Card = (article) => {
   // TASK 5
   // ---------------------
@@ -16,8 +18,38 @@ const Card = (article) => {
   //     <span>By { authorName }</span>
   //   </div>
   // </div>
-  //
+  
+    const cardContainer = document.createElement('div');
+    const headline = document.createElement('div');
+    const author = document.createElement('div');
+    const imgContainer = document.createElement('div');
+    const img = document.createElement('img');
+    const authorSpan = document.createElement('span');
+
+    cardContainer.classList.add('card');
+    headline.classList.add('headline');
+    author.classList.add('author');
+    imgContainer.classList.add('img-container');
+
+    img.setAttribute('src', `${article['authorPhoto']}` );
+    headline.textContent = `${article['headline']}`;
+    authorSpan.textContent = `${article['authorName']}`;
+
+    cardContainer.appendChild(headline);
+    cardContainer.appendChild(author);
+    author.appendChild(imgContainer);
+    imgContainer.appendChild(img);
+    author.appendChild(authorSpan)
+
+    cardContainer.addEventListener('click', () => {
+      console.log(headline)  
+
+    })
+    return cardContainer
+  
 }
+
+
 
 const cardAppender = (selector) => {
   // TASK 6
@@ -28,6 +60,22 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
+  axios.get(`http://localhost:5000/api/articles`)
+  .then(res => {
+    // used variable so i can itarate using a for each
+    const bootstrap = res.data.articles.bootstrap
+    console.log(bootstrap)
+    const javascript = res.data.articles.javascript
+    const jquery = res.data.articles.jquery
+    const node = res.data.articles.node
+    const technology = res.data.articles.technology
+    // spreader operator
+    const arrArticles = [...bootstrap, ...javascript, ...jquery, ...node, ...technology] 
+    arrArticles.forEach((item) => {
+      document.querySelector(selector).appendChild(Card(item))
+    })
+  })
 }
-
 export { Card, cardAppender }
+
+
